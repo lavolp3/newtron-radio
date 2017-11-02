@@ -1,0 +1,160 @@
+Installation
+============
+Zur Installation entpacken Sie die tgz-Datei am besten im Heimatverzeichnis
+des Standardbenutzers. Bei Raspian ist das der Benutzer 'pi':
+
+        cd /home/pi
+        tar xvzf newtron-radio-v2.7.5.tgz
+
+
+Einrichtung
+===========
+Bevor Sie das Radio starten können, müssen noch einige
+Abhängigkeiten erfüllt sein:
+
+1. Möchten Sie das Radio im Desktopmodus betreiben, sollte Raspbian
+   so konfiguriert sein, dass der grafische Desktop automatisch startet.
+   Das Touchdisplay muß bei laufendem Desktop bereits funktionieren.
+
+2. Möchten Sie das Radio im Konsolenmodus betreiben, muß auch dort
+   die grundlegende Funktion des Touchdisplays gegeben sein.
+   Es sollte also auf 'ts_calibrate' (resistive Displays) aus dem
+   libts-bin Paket reagieren.
+
+3. - Um unter python die Skin-Dateien im svg-Format laden zu können
+     benutzt das Skript kaa-imlib2 (kaa-base,kaa-imlib2)
+   - Um den Music Player Daemon (mpd) ansteuern zu können beutzt das
+     Skript python-mpd2
+   - Für die Ausgabe auf das Display wird pygame benötigt
+
+   Bitte installieren Sie die python-Module python-mpd2 sowie die beiden
+   kaa-Module ****nicht**** mit 'apt-get' da die Pakete dort veraltet
+   sind oder nicht alle benötigten Funktionen zur Verfügung stellen.
+
+   Um die Abhängigkeiten zu erfüllen geben Sie also folgendes ein:
+
+   === Schnipp ==================================== 
+      cd
+      sudo apt-get install mpd mpc
+      sudo apt-get install python-pip
+      sudo apt-get install python2.7-dev
+      sudo apt-get install python-pygame
+      sudo apt-get install libimlib2-dev
+      sudo apt-get install librsvg2-dev
+      sudo apt-get install libts-bin
+      sudo apt-get -y purge python-kaa-imlib2 python-kaa-base python-mpd
+      sudo pip install python-mpd2
+   ------------------------------------------------
+für wheezy:
+      sudo pip install kaa-base
+      sudo pip install kaa-imlib2
+   ------------------------------------------------
+für jessie:
+      wget http://archive.raspbian.org/raspbian/pool/main/libs/libsdl1.2/libsdl1.2debian_1.2.15-5_armhf.deb
+      sudo dpkg -i ./libsdl1.2debian_1.2.15-5_armhf.deb
+      sudo apt-mark hold libsdl1.2debian
+      sudo pip install --pre --upgrade kaa-base
+      sudo pip install --pre --upgrade kaa-imlib2
+   ------------------------------------------------
+und falls noch nicht geschehen:
+      tar xvzf newtron-radio-v2.7.5.tgz
+   === Schnapp ====================================
+   (Ich hoffe, ich hab nichts vergessen...)
+
+
+Konfiguration
+=============
+Konfigurationseinstellungen die die Funktion beeinflussen
+werden direkt im Skript mit einem Texteditor (nano, vi, ...)
+durchgeführt.
+Was man alles anpassen kann wird man schnell selbst feststellen...
+Das Skript finden Sie im Verzeichnis newtron-v2 unter dem Namen
+newtron-radio.py
+
+Ein Teil der Einstellungen kann im Radio selbst geändert und auch
+gespeichert werden (skin ,screensavermode/-timer,x-/plus-button).
+Gespeicherte Einstellungen haben Vorrang vor im Skript geänderten
+Einstellungen.
+
+Für die Wetteranzeige wird ein Key von OpenWeatherMap benötigt.
+Diesen kann man sich einfach über http://openweathermap.org/appid
+besorgen.
+Dieser Key ist dann im Skript in der Variablen OWM_KEY einzutragen.
+OWM_KEY kann aber auch als Umgebungsvariable an das Skript
+übergeben werden.
+Diese hat dann Vorrang vor der Einstellung im Skript.
+
+Der Standort für die Wetteranzeige wird als OWM_ID im Skript
+eingetragen. Die ID erhält man, indem man den gewünschten Ort
+auf http://openweathermap.org auswählt. Sie ist in der resultierenden
+URL abzulesen, z.B. für Frankfurt: http://openweathermap.org/city/2925533
+Die OWM_ID wäre demnach '2925533'
+Wenn dort jedoch nur Positionsangaben (long. und lat.) zurückgeliefert
+werden, sollte man sich die ID einer Stadt/Ort in der Nähe aus folgender
+Liste heraussuchen:
+http://bulk.openweathermap.org/sample/city.list.json.gz
+
+Die OWM_ID (OpenWeatherMap City-ID) kann auch über die Umgebungsvariable
+OWM_ID eingestellt werden (.profile, /etc/profile.d/, rc.local, etc).
+Diese hat dann Vorrang vor der Einstellung im Skript.
+
+Konfigurationseinstellungen die das Aussehen beeinflussen
+finden Sie in der Datei 'skin.cfg' des zugehörigen Skins
+Für den Default-Skin 'Tron' ist also newtron-v2/skins/Tron/skin.cfg
+zu bearbeiten.
+
+
+Start
+=====
+Wechseln Sie in das Verzeichnis 'newtron-v2'
+
+        cd ~/newtron-v2
+
+Jetzt können sie das Skript mit
+
+        ./newtron-radio.py
+
+starten - oder falls Sie die GPIO-Backlight-Steuerung im
+Skript aktiviert haben mit
+
+        sudo ./newtron-radio.py
+
+
+Hilfe
+=====
+Sollten Fehler - hier in der INSTALL.txt oder im Radioskript - auftauchen,
+bitte ich um eine Mail mit genauer Fehlerbeschreibung an veloci@gmx.de
+
+Lizenz
+======
+Das Programm ist frei im Sinne der 'The MIT License (MIT)'. Siehe license.txt.
+Die Gültigkeit der Lizenzen der nachfolgenden Quellen bleiben davon unberührt.
+
+Die Wettericons stammen von
+http://merlinthered.deviantart.com/art/plain-weather-icons-157162192
+und stehen unter einer 'Creative Commons Attribution-ShareAlike license'
+Anregungen und einige der Hintergrundbilder stammen von
+http://www.myfreetextures.com
+Die Wetterdaten stammen von OpenWeatherMap
+http://openweathermap.org
+und stehen unter der Creative Commons Attribution-ShareAlike 4.0 International
+Lizenz (CC BY-SA 4.0). Der Lizenztext ist unter
+http://creativecommons.org/licenses/by-sa/4.0/legalcode
+zu finden.
+
+Die oben genannten Quellen und der Autor übernehmen keinerlei Gewähr für die
+Aktualität, Korrektheit, Vollständigkeit oder Qualität der bereitgestellten
+Informationen. Haftungsansprüche gegen die Quellen oder den Autor, welche sich
+auf Schäden materieller oder ideeller Art beziehen, die durch die Nutzung oder
+Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter
+und unvollständiger Informationen verursacht wurden, sind grundsätzlich
+ausgeschlossen, sofern seitens des Autors kein nachweislich vorsätzliches
+oder grob fahrlässiges Verschulden vorliegt.
+
+Der Autor behält es sich ausdrücklich vor, Teile des Programms oder das gesamte
+Programm ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder
+die Veröffentlichung zeitweise oder endgültig einzustellen.
+
+
+Und jetzt viel Spass beim testen...
+
